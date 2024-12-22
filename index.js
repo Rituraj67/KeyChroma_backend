@@ -14,17 +14,17 @@ const dbName = "CryptoApp";
 const app = express();
 app.use(express.json());
 
-const allowedOrigins = ['https://keychroma.vercel.app'];
+// const allowedOrigins = ['https://keychroma.vercel.app'];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-};
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+// };
 
 app.use(cors());
 app.use(bodyParser.json());
