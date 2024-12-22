@@ -12,6 +12,8 @@ dotenv.config({
 const dbName = "CryptoApp";
 
 const app = express();
+app.use(cors());
+
 app.use(express.json());
 
 // const allowedOrigins = ['https://keychroma.vercel.app'];
@@ -26,7 +28,6 @@ app.use(express.json());
 //   },
 // };
 
-app.use(cors());
 app.use(bodyParser.json());
 
 const port = 8000;
