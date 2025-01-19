@@ -32,14 +32,16 @@ pipeline {
 
         stage('deploy') {
             steps {
-                echo 'Deploying...'
-                sh """
-                docker compose down
-                docker rmi ${env.DH_USER}/keychromabackend:latest || true
-                docker compose pull
-                docker compose up -d
-                """
-                echo 'Successfully Deployed'
+                withCredentials([usernamePassword(credentialsId:'DockerHubCred', passwordVariable:'DH_PASS', usernameVariable:'DH_USER')]){
+                    echo 'Deploying...'
+                    sh """
+                    docker compose down
+                    docker rmi ${env.DH_USER}/keychromabackend:latest || true
+                    docker compose pull
+                    docker compose up -d
+                    """
+                    echo 'Successfully Deployed'
+                }
             }
         }
     }
