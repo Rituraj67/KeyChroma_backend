@@ -8,6 +8,7 @@ import cors from "cors";
 dotenv.config({
   path: "./.env",
 });
+///hellooo
 
 const dbName = "CryptoApp";
 
