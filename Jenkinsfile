@@ -31,7 +31,8 @@ pipeline {
         }
 
         stage('deploy') {
-            echo 'Deploying...'
+            steps {
+                echo 'Deploying...'
                 sh """
                 docker compose down
                 docker rmi ${env.DH_USER}/keychromabackend:latest || true
@@ -39,6 +40,7 @@ pipeline {
                 docker compose up -d
                 """
                 echo 'Successfully Deployed'
+            }
         }
     }
 }
