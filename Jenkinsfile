@@ -37,6 +37,7 @@ pipeline {
                     sh """
                     docker compose down
                     docker rmi ${env.DH_USER}/keychromabackend:latest || true
+                    docker image prune -f
                     docker compose pull
                     docker compose up -d
                     """
@@ -45,75 +46,5 @@ pipeline {
             }
         }
 
-        // stage('Setup and Configure Nginx'){
-        //     steps{
-        //         script {
-        //             echo 'Updating package list...'
-        //             sh 'sudo apt update'
-        //            def nginxInstalled = sh(script: "which nginx", returnStatus: true)
-        //             if (nginxInstalled != 0) {
-        //                 // Install Nginx if it's not installed
-        //                 echo 'Installing Nginx...'
-        //                 sh 'sudo apt install -y nginx'
-        //             } else {
-        //                 echo "Nginx is already installed, skipping installation."
-        //             }
-        //             echo 'Starting Nginx service...'
-        //             sh 'sudo systemctl start nginx'
-
-        //             // Step 4: Enable Nginx to start on boot
-        //             echo 'Enabling Nginx to start on boot...'
-        //             sh 'sudo systemctl enable nginx'
-
-        //             // Step 5: Configure Nginx (for example, copying a custom config)
-        //             echo 'Configuring Nginx...'
-        //             sh '''
-        //                 echo "server {
-        //                     server_name apikeychroma.riturajs.me;
-
-        //                     # Proxy requests to the backend server
-        //                     location / {
-        //                         proxy_pass http://localhost:80/;
-        //                         proxy_set_header Host $host;
-        //                         proxy_set_header X-Real-IP $remote_addr;
-        //                         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        //                     }
-
-        //                     # Optional: Static files (if needed for the app)
-        //                     location /static/ {
-        //                         alias /var/www/apikeychroma.riturajs.me/static/;
-        //                     }
-
-        //                     listen 443 ssl; # managed by Certbot
-        //                     ssl_certificate /etc/letsencrypt/live/keychroma.riturajs.me/fullchain.pem; # managed by Certbot
-        //                     ssl_certificate_key /etc/letsencrypt/live/keychroma.riturajs.me/privkey.pem; # managed by Certbot
-        //                     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-        //                     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-        //                 }
-
-        //                 server {
-        //                     if ($host = apikeychroma.riturajs.me) {
-        //                         return 301 https://$host$request_uri;
-        //                     } # managed by Certbot
-
-        //                     listen 80;
-        //                     server_name apikeychroma.riturajs.me;
-        //                     return 404; # managed by Certbot
-        //                 }" | sudo tee /etc/nginx/sites-available/default
-        //             '''
-
-        //             echo "setting ssl certificate.."
-        //             sh "sudo certbot --nginx -d apikeychroma.riturajs.me"
-
-        //             // Step 6: Reload Nginx to apply changes
-        //             echo 'Reloading Nginx to apply changes...'
-        //             sh 'sudo systemctl reload nginx'
-
-        //             // Step 7: Check Nginx status
-        //             echo 'Checking Nginx status...'
-        //             sh 'sudo systemctl status nginx'
-        //         }
-        //     }
-        // }
     }
 }
