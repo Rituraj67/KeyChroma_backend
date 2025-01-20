@@ -1,47 +1,47 @@
+@library("SharedLib") _
 pipeline {
     agent { label 'Rituraj' }
 
     stages {
-        stage('Code') {
+        stage('Code_Clone') {
             steps {
-                echo 'Cloning The Code'
-                git url: 'https://github.com/Rituraj67/KeyChroma_backend.git', branch:'master'
-                echo 'Cloning successful'
-            }
-        }
-
-        stage('build') {
-            steps {
-                echo 'Building the Code'
-                withCredentials([usernamePassword(credentialsId:'DockerHubCred', passwordVariable:'DH_PASS', usernameVariable:'DH_USER')]) {
-                    sh "docker build --rm -t ${env.DH_USER}/keychromabackend ."
-                }
-                echo 'build successful'
-            }
-        }
-
-        stage('push dockehub') {
-            steps {
-                echo 'Pushing image to dockerhub'
-                withCredentials([usernamePassword(credentialsId:'DockerHubCred', passwordVariable:'DH_PASS', usernameVariable:'DH_USER')]) {
-                    sh "docker login -u ${env.DH_USER} -p ${env.DH_PASS}"
-                    sh "docker push ${env.DH_USER}/keychromabackend"
+                script{
+                    //arg(git_url, git_branch)
+                    Git_Clone('https://github.com/Rituraj67/KeyChroma_backend.git', 'main')
                 }
             }
         }
 
-        stage('deploy') {
+        stage('Build_Docker_Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId:'DockerHubCred', passwordVariable:'DH_PASS', usernameVariable:'DH_USER')]){
-                    echo 'Deploying...'
-                    sh """
-                    docker compose down
-                    docker rmi ${env.DH_USER}/keychromabackend:latest || true
-                    docker image prune -f
-                    docker compose pull
-                    docker compose up -d
-                    """
-                    echo 'Successfully Deployed'
+                script{
+                    withCredentials([usernamePassword(credentialsId:'DockerHubCred', passwordVariable:'DH_PASS', usernameVariable:'DH_USER')]) {
+                        //arg(dockerhub username, hub repo name)
+                        Build_Docker_Image("${env.DH_USER}", "keychromabackend" )
+                    }
+                }
+            }
+        }
+
+        stage('DockerHub_Push') {
+            steps {
+                script{
+                    withCredentials([usernamePassword(credentialsId:'DockerHubCred', passwordVariable:'DH_PASS', usernameVariable:'DH_USER')]) {
+                        //arg(dockerhub username, dockerhub pass, image repo name)
+                        DockerHub_Push("${env.DH_USER}", "${env.DH_PASS}", "keychromabackend")
+                    }
+                }
+
+            }
+        }
+
+        stage('Docker_Compose') {
+            steps {
+                script{
+                    withCredentials([usernamePassword(credentialsId:'DockerHubCred', passwordVariable:'DH_PASS', usernameVariable:'DH_USER')]){
+                        //arg(dockerhub username, image repo name)
+                        Docker_Compose("${env.DH_USER}", "keychromabackend")
+                    }
                 }
             }
         }
