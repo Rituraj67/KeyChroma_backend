@@ -1,4 +1,4 @@
-@library("SharedLib") _
+@Library("SharedLib") _
 pipeline {
     agent { label 'Rituraj' }
 
